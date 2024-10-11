@@ -25,5 +25,5 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: dominiktr/test_image:${{ github.sha }}
+          tags: domintr/test_image:${{ github.sha }}
 
