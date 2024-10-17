@@ -1,4 +1,5 @@
 name: Build and publish Docker image; Update manifest repo
+
 env:
   CONFIG_REPO: test_config
 
