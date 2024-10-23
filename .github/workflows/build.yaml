@@ -22,11 +22,19 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Generate tag
+       id: meta
+       uses: docker/metadata-action@v5
+       with:
+         images: domintr/test_image
+         tags: |
+           type=semver,pattern={{version}},value=0.0.0
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: domintr/test_image:${{ github.sha }}
+          tags: domintr/test_image:${{ steps.meta.output.tags }}
 
   update-config:
     runs-on: ubuntu-latest
@@ -37,5 +45,5 @@ jobs:
           git clone https://oauth2:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/$CONFIG_REPO.git
           cd $CONFIG_REPO
           git checkout test
-          sed -i 's/\(tag: \).*/\1${{ github.sha }}/' config/values.yaml
-          git add . && git commit -m "Updated image to ${{ github.sha }}" &&  git push
+          sed -i '21s/TAG/${{ steps.meta.output.tags }}/;22s/TAG/${{ steps.meta.output.tags }}/' config/deployment.yaml
+          git add . && git commit -m "Updated to ${{  steps.meta.output.tags }}" &&  git push
