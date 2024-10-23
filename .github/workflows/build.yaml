@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: domintr/test_image:${{ steps.meta.output.tags }}
+          tags: domintr/test_image:${{ steps.meta.outputs.tags }}
 
   update-config:
     runs-on: ubuntu-latest
@@ -45,5 +45,5 @@ jobs:
           git clone https://oauth2:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/$CONFIG_REPO.git
           cd $CONFIG_REPO
           git checkout test
-          sed -i '21s/TAG/${{ steps.meta.output.tags }}/;22s/TAG/${{ steps.meta.output.tags }}/' config/deployment.yaml
-          git add . && git commit -m "Updated to ${{  steps.meta.output.tags }}" &&  git push
+          sed -i '21s/TAG/${{ steps.meta.outputs.tags }}/;22s/TAG/${{ steps.meta.outputs.tags }}/' config/deployment.yaml
+          git add . && git commit -m "Updated to ${{ steps.meta.outputs.tags }}" &&  git push
