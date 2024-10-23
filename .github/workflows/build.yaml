@@ -30,7 +30,8 @@ jobs:
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/test_image
           tags: |
-            type=semver,pattern={{version}},value=0.0.0
+            type=sha,priority=100,prefix=sha-,format=short
+            type=semver,priority=200,pattern={{version}}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -56,6 +57,6 @@ jobs:
           git checkout test
           sed -i 's/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:.*/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:${{ env.TAG }}/g' config/deployment.yaml
           sed -i 's/test-image:.*/test-image:${{ env.TAG }}/g' config/deployment.yaml
-          echo {{ env.TAG }}
-          cat config/deploument.yaml
+          echo ${{ env.TAG }}
+          cat config/deployment.yaml
           git add . && git commit -m "Updated to ${{ env.TAG }}" &&  git push
