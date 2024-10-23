@@ -28,7 +28,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: domintr/test_image
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/test_image
           tags: |
             type=semver,pattern={{version}},value=0.0.0
 
@@ -54,5 +54,6 @@ jobs:
           git clone https://oauth2:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository_owner }}/$CONFIG_REPO.git
           cd $CONFIG_REPO
           git checkout test
-          sed -i '21s|- image: domintr/test_image:.*|- image: domintr/test_image:${{ env.TAG }}|; 22s|- name: test-image-.*|- name: test-image-${{ env.TAG }}|' config/deployment.yaml
+          sed -i 's/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:.*/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:${{ env.TAG }}/g' config/deployment.yaml
+          sed -i 's/test-image:.*/test-image:${{ env.TAG }}/g' config/deployment.yaml
           git add . && git commit -m "Updated to ${{ env.TAG }}" &&  git push
