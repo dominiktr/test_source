@@ -56,7 +56,6 @@ jobs:
           cd $CONFIG_REPO
           git checkout test
           sed -i 's/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:.*/${{ secrets.DOCKERHUB_USERNAME }}\/test_image:${{ env.TAG }}/g' config/deployment.yaml
-          sed -i 's/test-image-.*/test-image-${{ env.TAG }}/g' config/deployment.yaml
           echo ${{ env.TAG }}
           cat config/deployment.yaml
           git add . && git commit -m "Updated to ${{ env.TAG }}" &&  git push
